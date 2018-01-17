@@ -23,7 +23,7 @@ import java.nio.file.Path
 import com.esotericsoftware.kryo.io.{InputChunked, OutputChunked}
 import com.google.common.io.{ByteStreams, CountingOutputStream}
 import com.google.common.reflect.ClassPath
-import com.google.protobuf.Message
+import com.google.protobuf.{ByteString, Message}
 import com.spotify.scio.options.ScioOptions
 import com.twitter.chill._
 import com.twitter.chill.algebird.AlgebirdRegistrar
@@ -111,6 +111,7 @@ private[scio] class KryoAtomicCoder[T](private val options: KryoOptions) extends
         k.forSubclass[DateTime](new JodaDateTimeSerializer)
 
         k.forSubclass[Path](new JPathSerializer)
+        k.forSubclass[ByteString](new ByteStringSerializer)
 
         k.forClass(new KVSerializer)
         // TODO:
