@@ -18,6 +18,7 @@
 package com.spotify.scio.coders
 
 import java.io.{InputStream, OutputStream}
+import java.nio.file.Path
 
 import com.esotericsoftware.kryo.io.{InputChunked, OutputChunked}
 import com.google.common.io.{ByteStreams, CountingOutputStream}
@@ -108,6 +109,8 @@ private[scio] class KryoAtomicCoder[T](private val options: KryoOptions) extends
         k.forSubclass[LocalTime](new JodaLocalTimeSerializer)
         k.forSubclass[LocalDateTime](new JodaLocalDateTimeSerializer)
         k.forSubclass[DateTime](new JodaDateTimeSerializer)
+
+        k.forSubclass[Path](new JPathSerializer)
 
         k.forClass(new KVSerializer)
         // TODO:
