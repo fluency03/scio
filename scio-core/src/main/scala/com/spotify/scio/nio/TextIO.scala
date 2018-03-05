@@ -36,7 +36,8 @@ case class TextIO(path: String) extends ScioIO[String] with Tap[String] {
   type ReadP = ReadParams
   type WriteP = WriteParams
 
-  def read(sc: ScioContext, params: ReadParams): SCollection[String] = sc.requireNotClosed {
+  override def read(sc: ScioContext, params: ReadParams)
+  : SCollection[String] = sc.requireNotClosed {
     if (sc.isTest) {
       // TODO: support test
       throw new UnsupportedOperationException("TextIO test is not yet supported")
@@ -46,7 +47,7 @@ case class TextIO(path: String) extends ScioIO[String] with Tap[String] {
     }
   }
 
-  def write(pipeline: SCollection[String], params: WriteParams): Future[Tap[String]] = {
+  override def write(pipeline: SCollection[String], params: WriteParams): Future[Tap[String]] = {
     if (pipeline.context.isTest) {
       // TODO: support test
       throw new UnsupportedOperationException("TextIO test is not yet supported")
@@ -57,10 +58,10 @@ case class TextIO(path: String) extends ScioIO[String] with Tap[String] {
   }
 
   /** Read data set into memory. */
-  def value: Iterator[String] = FileStorage(path).textFile
+  override def value: Iterator[String] = FileStorage(path).textFile
 
   /** Open data set as an [[com.spotify.scio.values.SCollection SCollection]]. */
-  def open(sc: ScioContext): SCollection[String] = read(sc, ReadParams())
+  override def open(sc: ScioContext): SCollection[String] = read(sc, ReadParams())
 
   private[scio] def textOut(path: String,
                             params: WriteParams) = {
@@ -75,4 +76,3 @@ case class TextIO(path: String) extends ScioIO[String] with Tap[String] {
   private[scio] def pathWithShards(path: String) = path.replaceAll("\\/+$", "") + "/part"
 
 }
-
